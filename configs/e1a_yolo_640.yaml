@@ -1,0 +1,20 @@
+experiment: e1a
+model: yolov5s
+imgsz: 640
+epochs: 50
+batch_size: 8
+optimizer: AdamW
+lr0: 0.001
+lrf: 0.01
+weight_decay: 0.0005
+warmup_epochs: 3
+patience: 10
+augment:
+  mosaic: 1.0
+  fliplr: 0.5
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  scale: 0.5
+seed: 42
+device: auto

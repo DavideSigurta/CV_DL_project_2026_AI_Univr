@@ -1,0 +1,9 @@
+experiment: e3
+checkpoint: results/runs/e1a/checkpoints/best.pt
+slice_height: 640
+slice_width: 640
+overlap_height_ratio: 0.2
+overlap_width_ratio: 0.2
+confidence_threshold: 0.25
+nms_iou_threshold: 0.5
+device: auto
