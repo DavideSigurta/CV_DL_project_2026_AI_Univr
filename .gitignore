@@ -12,6 +12,9 @@ data/subsets/
 results/
 report/
 
+# Pretrained model weights
+models/
+
 # PyTorch checkpoint files (safety net)
 *.pt
 *.pth

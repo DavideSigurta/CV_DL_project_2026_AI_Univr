@@ -10,9 +10,6 @@ pyyaml
 ultralytics
 pycocotools
 sahi
-grad-cam
 opencv-python
 modal
 kaggle
-jupyter
-notebook

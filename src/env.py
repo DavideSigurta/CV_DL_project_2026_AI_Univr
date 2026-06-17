@@ -45,7 +45,7 @@ def get_paths() -> dict[str, Path]:
             "data":    Path("/data/VisDrone2019-DET"),
             "subsets": Path("/data/subsets"),
             "output":  Path("/outputs/runs"),
-            "configs": Path("/outputs/configs"),
+            "configs": Path("/root/project/configs"),
         }
     else:
         raise ValueError(f"Unknown VISDRONE_ENV: {env!r}. Choose 'local' or 'modal'.")

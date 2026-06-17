@@ -1,0 +1,16 @@
+# Heavy data — on persistent volumes, not in image
+data/
+results/
+report/
+
+# Dev artifacts — not needed at runtime
+.git/
+.gitignore
+.modalignore
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+notebooks/
+*.md
+state.md
+log.md
