@@ -6,7 +6,9 @@ All figures are report-ready: axis labels, legends, consistent palette, DPI >= 1
 
 import numpy as np
 import matplotlib
-matplotlib.use("Agg")  # non-interactive backend, safe in notebooks too
+from src.env import set_matplotlib_backend
+
+set_matplotlib_backend()  # Agg only on Modal; leaves notebook backend alone
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.ticker as mticker
@@ -117,17 +119,18 @@ def plot_pr_curve(precision: np.ndarray, recall: np.ndarray, class_name: str,
     if save_path:
         save_path.parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(save_path, dpi=150, bbox_inches="tight")
-    plt.show()
     plt.close(fig)
 
 
-def plot_per_class_ap_heatmap(ap_dict: dict, save_path: Optional[Path] = None):
+def plot_per_class_ap_heatmap(ap_dict: dict, save_path: Optional[Path] = None,
+                            show: bool = False):
     """
     Plot heatmap: N configurations x 10 classes.
 
     Args:
         ap_dict: dict mapping config_name -> list of AP per class (len 10)
         save_path: optional path to save figure
+        show: if True, call plt.show() before closing (inline notebook display)
     """
     configs = list(ap_dict.keys())
     n_configs = len(configs)
@@ -155,17 +158,20 @@ def plot_per_class_ap_heatmap(ap_dict: dict, save_path: Optional[Path] = None):
     if save_path:
         save_path.parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(save_path, dpi=150, bbox_inches="tight")
-    plt.show()
+    if show:
+        plt.show()
     plt.close(fig)
 
 
-def plot_summary_table(metrics: dict, save_path: Optional[Path] = None):
+def plot_summary_table(metrics: dict, save_path: Optional[Path] = None,
+                       show: bool = False):
     """
     Plot the full metrics summary table.
 
     Args:
         metrics: dict mapping config_name -> dict of metric_name -> value
         save_path: optional path to save figure
+        show: if True, call plt.show() before closing (inline notebook display)
     """
     configs = list(metrics.keys())
     metric_names = list(metrics[configs[0]].keys())
@@ -217,7 +223,8 @@ def plot_summary_table(metrics: dict, save_path: Optional[Path] = None):
     if save_path:
         save_path.parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(save_path, dpi=150, bbox_inches="tight")
-    plt.show()
+    if show:
+        plt.show()
     plt.close(fig)
 
 
@@ -245,7 +252,6 @@ def plot_altitude_performance(altitude_groups: dict, save_path: Optional[Path] =
     if save_path:
         save_path.parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(save_path, dpi=150, bbox_inches="tight")
-    plt.show()
     plt.close(fig)
 
 
@@ -286,5 +292,4 @@ def plot_confusion_matrix(cm: np.ndarray, class_names: Optional[list] = None,
     if save_path:
         save_path.parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(save_path, dpi=150, bbox_inches="tight")
-    plt.show()
     plt.close(fig)

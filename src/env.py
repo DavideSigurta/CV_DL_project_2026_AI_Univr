@@ -63,6 +63,19 @@ def get_env_info() -> dict:
     }
 
 
+def set_matplotlib_backend() -> None:
+    """Set Agg backend only in headless environments (Modal).
+
+    In notebooks (local env) leaves default backend alone so
+    Jupyter inline display works. Must be called *before*
+    ``import matplotlib.pyplot``.
+    """
+    env = os.environ.get("VISDRONE_ENV", "local")
+    if env == "modal":
+        import matplotlib
+        matplotlib.use("Agg")
+
+
 def seed_everything(seed: int = 42) -> None:
     """Fix all sources of randomness for reproducibility."""
     import random

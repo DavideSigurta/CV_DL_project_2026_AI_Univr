@@ -177,6 +177,17 @@ def visdrone_to_coco_json(data_dir: Path = None, split: str = "val",
                 })
                 ann_id += 1
 
+    # Sanity check: clamp tiny floating-point negatives to 0, reject truly negative
+    for ann in annotations:
+        x, y, w, h = ann["bbox"]
+        if w <= 0 or h <= 0:
+            raise ValueError(f"Zero/negative area bbox: {ann}")
+        if x < -0.1 or y < -0.1:
+            raise ValueError(f"Negative coordinates in GT (beyond fp tolerance): {ann}")
+        # Clamp tiny fp negatives to 0
+        ann["bbox"][0] = max(0.0, x)
+        ann["bbox"][1] = max(0.0, y)
+
     return {
         "images": images,
         "annotations": annotations,
