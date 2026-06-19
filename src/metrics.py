@@ -138,3 +138,35 @@ def compute_ap_from_pr(precision: np.ndarray, recall: np.ndarray) -> float:
             ap += np.max(precision[mask])
         # else 0 contribution
     return ap / 101.0
+
+
+def extract_best_metrics(epochs: list, metric_key: str = "val_mAP@0.5") -> dict:
+    """
+    Extract best-epoch validation metrics from metrics.jsonl epoch list.
+
+    metrics.jsonl stores per-epoch dicts with ``val_``-prefixed keys
+    (e.g. ``val_mAP@0.5:0.95``). Downstream code (notebook cells,
+    comparison tables) expects short-form keys without prefix
+    (e.g. ``mAP@0.5:0.95``).  This helper converts between the two.
+
+    Args:
+        epochs: list of dicts, each from one line of metrics.jsonl.
+            Required keys: ``epoch``, ``val_mAP@0.5:0.95``,
+            ``val_mAP@0.5``, ``val_mAP@0.75``, ``val_AP_small``,
+            ``val_AP_medium``, ``val_AP_large``, ``val_AP_per_class``.
+        metric_key: which metric to use for selecting the best epoch
+            (default ``val_mAP@0.5``).
+
+    Returns:
+        dict with short-form keys:
+        ``mAP@0.5:0.95``, ``mAP@0.5``, ``mAP@0.75``,
+        ``AP_small``, ``AP_medium``, ``AP_large``, ``AP_per_class``.
+    """
+    best = max(epochs, key=lambda e: e[metric_key])
+
+    # Map: val_XXX -> XXX (strip the ``val_`` prefix)
+    short_keys = [
+        "mAP@0.5:0.95", "mAP@0.5", "mAP@0.75",
+        "AP_small", "AP_medium", "AP_large", "AP_per_class",
+    ]
+    return {k: best[f"val_{k}"] for k in short_keys}

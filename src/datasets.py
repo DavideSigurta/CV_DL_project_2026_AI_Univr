@@ -76,7 +76,9 @@ class VisDroneDataset(Dataset):
                     x2 = cx + bw / 2
                     y2 = cy + bh / 2
                     boxes.append([x1, y1, x2, y2])
-                    labels.append(cls_id)
+                    # FRCNN expects label 0 = background, 1+ = classes.
+                    # VisDrone uses 0-based class IDs → shift +1.
+                    labels.append(cls_id + 1)
                     occlusions.append(int(parts[5]) if len(parts) >= 7 else -1)
                     truncations.append(int(parts[6]) if len(parts) >= 7 else -1)
 
@@ -90,7 +92,12 @@ class VisDroneDataset(Dataset):
         }
 
         if self.transforms:
-            image = self.transforms(image)
+            # Transforms may operate on (image, target) tuples (DetectionCompose)
+            # or on image only (legacy single-arg transforms).
+            try:
+                image, target = self.transforms(image, target)
+            except TypeError:
+                image = self.transforms(image)
 
         return image, target
 
@@ -123,8 +130,11 @@ def visdrone_to_coco_json(data_dir: Path = None, split: str = "val",
         img_dir = data_dir / "images" / split
         ann_dir = data_dir / "annotations" / split
 
+    # 1-indexed to match FRCNN/YOLO label convention (0=background).
+    # Predictions from both YOLO (via auto-detect) and FRCNN (via validate)
+    # are in 1-10 space — having GT 1-indexed removes manual conversions.
     categories = [
-        {"id": i, "name": name, "supercategory": "object"}
+        {"id": i + 1, "name": name, "supercategory": "object"}
         for i, name in enumerate(VISDRONE_CLASSES)
     ]
 
@@ -168,7 +178,7 @@ def visdrone_to_coco_json(data_dir: Path = None, split: str = "val",
                 annotations.append({
                     "id": ann_id,
                     "image_id": img_id,
-                    "category_id": cls_id,
+                    "category_id": cls_id + 1,  # 1-indexed (matches categories)
                     "bbox": [x1, y1, bw, bh],  # COCO format: [x, y, w, h]
                     "area": bw * bh,
                     "iscrowd": 0,

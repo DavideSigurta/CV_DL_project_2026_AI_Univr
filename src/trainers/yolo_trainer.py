@@ -234,11 +234,6 @@ class YOLOTrainer(BaseTrainer):
             from src.datasets import visdrone_to_coco_json
             coco_gt_dict = visdrone_to_coco_json(img_dir=img_dir, ann_dir=ann_dir)
 
-            for cat in coco_gt_dict["categories"]:
-                cat["id"] += 1
-            for ann in coco_gt_dict["annotations"]:
-                ann["category_id"] += 1
-
             coco_gt = COCO()
             coco_gt.dataset = coco_gt_dict
             coco_gt.createIndex()
@@ -281,10 +276,11 @@ class YOLOTrainer(BaseTrainer):
                         print(f"[WARN] No predictions mapped to GT — "
                               f"AP_small/medium/large remain 0.0.")
                     else:
-                        # Auto-detect category_id 0-based vs 1-based
-                        gt_cat_ids   = set(coco_gt.getCatIds())
+                        # visdrone_to_coco_json returns 1-indexed GT (1-10).
+                        # Ultralytics predictions.json may be 0-indexed (0-9).
+                        # Shift if min pred category is 0 (invalid in COCO).
                         pred_cat_ids = set(p["category_id"] for p in preds)
-                        if pred_cat_ids and max(pred_cat_ids) < min(gt_cat_ids):
+                        if pred_cat_ids and min(pred_cat_ids) == 0:
                             for p in preds:
                                 p["category_id"] += 1
 

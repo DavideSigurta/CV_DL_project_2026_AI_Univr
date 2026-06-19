@@ -1,6 +1,6 @@
 from .env import get_device, get_paths, get_env_info, seed_everything
 from .datasets import VisDroneDataset, visdrone_to_coco_json, VISDRONE_CLASSES
-from .augmentations import get_train_transforms, get_val_transforms
+from .augmentations import get_frcnn_train_transforms, get_frcnn_val_transforms
 from .metrics import compute_map, compute_pr_curve, compute_ap_from_pr
 from .visualization import (set_plot_style, draw_bboxes, plot_pr_curve,
                             plot_per_class_ap_heatmap, plot_summary_table,
