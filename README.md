@@ -35,7 +35,7 @@ Annotations stored in **YOLO+ format** (7 columns): standard YOLO (cls cx cy w h
 | `visdrone-data` | `/data` | Dataset (images + annotations) |
 | `visdrone-outputs` | `/outputs` | Experiment results (checkpoints, metrics, figures) |
 
-### Setup
+### Setup (Modal)
 
 ```bash
 # 1. Upload dataset to volume
@@ -66,9 +66,29 @@ modal run modal_app.py::download_results --experiment-name e1b
 
 ## Setup
 
+### 1) Create environment
+
 ```bash
 conda env create -f environment.yml
-conda activate visdrone
+conda activate visidrone
+```
+
+### 2) Configure Kaggle credentials
+
+Place your Kaggle API token in your home directory (never commit it):
+
+```bash
+mkdir -p ~/.kaggle && echo your_token_here > ~/.kaggle/access_token && chmod 600 ~/.kaggle/access_token
+```
+
+Get your token from https://www.kaggle.com/settings/api
+
+### 3) Download datasets
+
+Open and run:
+
+```
+notebooks/00_setup_environment.ipynb
 ```
 
 ## Repository structure
