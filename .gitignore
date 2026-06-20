@@ -54,8 +54,9 @@ kaggle.json
 # Ultralytics cache files
 **/*.cache
 
-# Markdown files (project docs kept locally only)
+# Markdown files (except README)
 *.md
+!README.md
 
 .continue/
 plan/
